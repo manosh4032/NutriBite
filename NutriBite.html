@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriBite - Your Personalized AI Diet Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .container {
+            max-width: 960px;
+        }
+        .gradient-bg {
+            background-image: linear-gradient(to right, #4ade80, #14b8a6);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div class="gradient-bg text-white p-8 md:p-12 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-2">NutriBite</h1>
+                <p class="text-lg md:text-xl font-medium">Your Personalized AI Diet Assistant</p>
+                <p class="mt-4 max-w-2xl mx-auto text-sm opacity-90">
+                    Tell us about yourself and your goals, and let our AI-powered nutritionist craft a personalized 7-day meal plan just for you.
+                </p>
+            </div>
+
+            <div class="p-6 md:p-10">
+                <div id="input-section" class="mb-8">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Your Details</h2>
+                    <form id="diet-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+                                <select id="gender" name="gender" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 transition duration-150 ease-in-out">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="age" class="block text-sm font-medium text-gray-700">Age (years)</label>
+                                <input type="number" id="age" name="age" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 transition duration-150 ease-in-out" min="1" max="120" placeholder="e.g., 30">
+                            </div>
+                            <div>
+                                <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
+                                <input type="number" id="weight" name="weight" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 transition duration-150 ease-in-out" min="10" max="300" placeholder="e.g., 75">
+                            </div>
+                            <div>
+                                <label for="height" class="block text-sm font-medium text-gray-700">Height (cm)</label>
+                                <input type="number" id="height" name="height" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 transition duration-150 ease-in-out" min="50" max="250" placeholder="e.g., 170">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="activityLevel" class="block text-sm font-medium text-gray-700">Activity Level</label>
+                            <select id="activityLevel" name="activityLevel" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 transition duration-150 ease-in-out">
+                                <option value="Sedentary">Sedentary (little or no exercise)</option>
+                                <option value="Lightly active">Lightly active (1-3 days/week exercise)</option>
+                                <option value="Moderately active">Moderately active (3-5 days/week exercise)</option>
+                                <option value="Very active">Very active (6-7 days/week exercise)</option>
+                                <option value="Extremely active">Extremely active (twice a day exercise)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="dietaryRestrictions" class="block text-sm font-medium text-gray-700">Dietary Preferences/Restrictions</label>
+                            <textarea id="dietaryRestrictions" name="dietaryRestrictions" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 transition duration-150 ease-in-out" placeholder="e.g., Vegetarian, gluten-free, no peanuts"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="goal" class="block text-sm font-medium text-gray-700">Your Goal</label>
+                            <textarea id="goal" name="goal" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 transition duration-150 ease-in-out" placeholder="e.g., Lose 5kg in 2 months, build muscle, maintain current weight"></textarea>
+                        </div>
+                        
+                        <button type="submit" id="generate-btn" class="w-full py-3 px-4 rounded-md bg-green-600 text-white font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                            Generate My Diet Plan
+                        </button>
+                    </form>
+                </div>
+
+                <div id="loading-spinner" class="hidden flex justify-center items-center py-10">
+                    <div class="loader"></div>
+                    <p class="ml-4 text-gray-600 font-medium">Crafting your personalized plan...</p>
+                </div>
+
+                <div id="results-section" class="hidden bg-gray-50 rounded-lg p-6 md:p-8 border border-gray-200">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Personalized Diet Plan</h2>
+                    <div id="diet-plan-content" class="prose max-w-none">
+                        </div>
+                    <button id="back-btn" class="mt-8 py-2 px-4 rounded-md bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition duration-150 ease-in-out">
+                        Start Over
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('diet-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Show loading spinner and hide other sections
+            document.getElementById('input-section').classList.add('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('loading-spinner').classList.remove('hidden');
+
+            const form = e.target;
+            const gender = form.gender.value;
+            const age = form.age.value;
+            const weight = form.weight.value;
+            const height = form.height.value;
+            const activityLevel = form.activityLevel.value;
+            const dietaryRestrictions = form.dietaryRestrictions.value;
+            const goal = form.goal.value;
+
+            // Construct the detailed prompt for the AI
+            const prompt = `
+            As a certified nutritionist and diet planning expert named Nutribite, your task is to create a personalized, 7-day diet plan for the user.
+            The plan should be well-structured, easy to follow, and factually accurate. Use your expertise to provide a balanced and effective plan.
+
+            User's personal details:
+            - Gender: ${gender}
+            - Age: ${age} years
+            - Weight: ${weight} kg
+            - Height: ${height} cm
+            - Activity Level: ${activityLevel}
+            - Dietary Preferences/Restrictions: ${dietaryRestrictions || "None specified"}
+            - Health Goal: ${goal}
+
+            Instructions for the plan:
+            1.  **Summary:** Start with a brief, encouraging paragraph (3-4 sentences) explaining the nutritional philosophy behind the plan.
+            2.  **Daily Plan:** For each of the 7 days (Monday to Sunday), create a detailed meal plan.
+            3.  **Meal Structure:** Each day should include a plan for Breakfast, Lunch, Dinner, and two Snacks.
+            4.  **Content for each meal:**
+                -   **Meal Title:** A descriptive name (e.g., "Berry Blast Smoothie").
+                -   **Description:** A short description of the meal.
+                -   **Key Ingredients:** A bulleted list of the main ingredients.
+                -   **Estimated Calories:** A specific, estimated calorie count for the meal.
+            
+            Format the response using clear headings and bullet points for easy readability. Do not include any placeholder text or external links. Do not add a concluding statement.
+            `;
+
+            // This is a placeholder for the actual API call.
+            // In a real application, you would replace this with a fetch() call to your backend
+            // which then calls the Gemini API.
+            try {
+                const response = await simulateAIResponse(prompt);
+                
+                // Display the results
+                document.getElementById('diet-plan-content').innerHTML = response;
+                document.getElementById('loading-spinner').classList.add('hidden');
+                document.getElementById('results-section').classList.remove('hidden');
+
+                // Scroll to the results section
+                document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Error generating diet plan:", error);
+                document.getElementById('loading-spinner').classList.add('hidden');
+                document.getElementById('input-section').classList.remove('hidden');
+                alert("An error occurred. Please try again later.");
+            }
+        });
+
+        // Function to simulate an AI response
+        async function simulateAIResponse(prompt) {
+            console.log("Simulating AI call with prompt:", prompt);
+            
+            // This is where you would place your actual fetch call to the Gemini API
+            // For this example, we return a hardcoded response after a short delay
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`
+                        <h3 class="text-xl font-bold text-green-700 mb-4">Nutritional Philosophy</h3>
+                        <p class="mb-6 text-gray-700">This plan is designed to be well-rounded and sustainable, focusing on whole foods, balanced macronutrients, and consistent energy throughout the day. It prioritizes lean proteins for muscle maintenance, complex carbohydrates for lasting energy, and healthy fats for satiety and brain health. Hydration and nutrient-dense snacks are integrated to support your goals and prevent cravings. The plan is structured to be flexible, allowing you to swap similar food items to keep it enjoyable.</p>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Day 1: Monday</h3>
+                        <h4 class="text-lg font-semibold text-green-600">Breakfast: Greek Yogurt Parfait</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: High-protein Greek yogurt layered with mixed berries and a sprinkle of almonds.</li>
+                            <li>Key Ingredients: Greek yogurt, mixed berries (fresh or frozen), sliced almonds.</li>
+                            <li>Estimated Calories: 320 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 1: Apple with Peanut Butter</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A classic snack that combines fiber and healthy fats.</li>
+                            <li>Key Ingredients: One medium apple, 2 tablespoons of natural peanut butter.</li>
+                            <li>Estimated Calories: 280 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Lunch: Grilled Chicken Salad</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A fresh salad with grilled chicken breast, mixed greens, cherry tomatoes, cucumber, and a light vinaigrette.</li>
+                            <li>Key Ingredients: Grilled chicken breast, mixed greens, tomatoes, cucumber, vinaigrette.</li>
+                            <li>Estimated Calories: 450 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 2: Hard-Boiled Egg</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A simple, protein-rich snack to keep you full.</li>
+                            <li>Key Ingredients: One large hard-boiled egg.</li>
+                            <li>Estimated Calories: 78 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Dinner: Baked Salmon with Roasted Vegetables</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A delicious and nutritious meal rich in Omega-3 fatty acids.</li>
+                            <li>Key Ingredients: Salmon fillet, broccoli, asparagus, olive oil, lemon.</li>
+                            <li>Estimated Calories: 550 kcal.</li>
+                        </ul>
+                        
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 mt-6">Day 2: Tuesday</h3>
+                        <h4 class="text-lg font-semibold text-green-600">Breakfast: Oatmeal with Banana and Walnuts</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: Warm oatmeal providing complex carbs and fiber, topped with fruit and nuts.</li>
+                            <li>Key Ingredients: Rolled oats, water or milk, sliced banana, walnuts.</li>
+                            <li>Estimated Calories: 400 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 1: Handful of Trail Mix</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A mix of dried fruits and nuts for quick energy.</li>
+                            <li>Key Ingredients: Raisins, cashews, pumpkin seeds.</li>
+                            <li>Estimated Calories: 200 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Lunch: Quinoa Bowl with Black Beans and Corn</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A hearty, plant-based bowl packed with protein and fiber.</li>
+                            <li>Key Ingredients: Cooked quinoa, black beans, corn, bell peppers, cilantro.</li>
+                            <li>Estimated Calories: 480 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 2: Cottage Cheese</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A great source of protein to satisfy hunger between meals.</li>
+                            <li>Key Ingredients: 1/2 cup low-fat cottage cheese.</li>
+                            <li>Estimated Calories: 100 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Dinner: Turkey and Vegetable Stir-fry</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A lean and flavorful stir-fry with a variety of vegetables.</li>
+                            <li>Key Ingredients: Ground turkey, broccoli, carrots, snap peas, soy sauce.</li>
+                            <li>Estimated Calories: 520 kcal.</li>
+                        </ul>
+                        
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 mt-6">Day 3: Wednesday</h3>
+                        <h4 class="text-lg font-semibold text-green-600">Breakfast: Scrambled Eggs with Spinach</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: Protein-rich eggs scrambled with fresh spinach for a nutrient boost.</li>
+                            <li>Key Ingredients: Two eggs, fresh spinach, a dash of milk, seasoning.</li>
+                            <li>Estimated Calories: 250 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 1: Protein Smoothie</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A quick and easy smoothie to fuel your day.</li>
+                            <li>Key Ingredients: 1 scoop protein powder, 1 cup almond milk, half a banana.</li>
+                            <li>Estimated Calories: 220 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Lunch: Lentil Soup</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A hearty and comforting soup that's rich in fiber and plant-based protein.</li>
+                            <li>Key Ingredients: Lentils, carrots, celery, onion, vegetable broth.</li>
+                            <li>Estimated Calories: 380 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 2: A Handful of Grapes</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A simple, hydrating, and sweet snack.</li>
+                            <li>Key Ingredients: 1 cup of green or red grapes.</li>
+                            <li>Estimated Calories: 100 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Dinner: Chicken Breast with Brown Rice and Steamed Greens</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A balanced plate with lean protein, complex carbs, and essential vitamins.</li>
+                            <li>Key Ingredients: Chicken breast, brown rice, steamed broccoli.</li>
+                            <li>Estimated Calories: 500 kcal.</li>
+                        </ul>
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 mt-6">Day 4: Thursday</h3>
+                        <h4 class="text-lg font-semibold text-green-600">Breakfast: Whole Wheat Toast with Avocado</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: Fiber-rich toast topped with creamy avocado and a sprinkle of red pepper flakes.</li>
+                            <li>Key Ingredients: 1 slice whole wheat toast, 1/4 avocado, red pepper flakes.</li>
+                            <li>Estimated Calories: 280 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 1: Small Yogurt Cup</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A light and convenient snack to curb cravings.</li>
+                            <li>Key Ingredients: 1 small container of low-fat plain yogurt.</li>
+                            <li>Estimated Calories: 150 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Lunch: Leftover Chicken Stir-fry</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: Enjoy the convenient and delicious leftovers from Tuesday's dinner.</li>
+                            <li>Key Ingredients: From yesterday's dinner.</li>
+                            <li>Estimated Calories: 520 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 2: Carrot Sticks with Hummus</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A crunchy and satisfying snack with a protein boost.</li>
+                            <li>Key Ingredients: Carrot sticks, 2 tablespoons of hummus.</li>
+                            <li>Estimated Calories: 120 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Dinner: Lean Beef Stir-fry with Brown Rice</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A hearty meal featuring lean beef and a variety of colorful vegetables.</li>
+                            <li>Key Ingredients: Lean beef strips, broccoli, bell peppers, onions, ginger, brown rice.</li>
+                            <li>Estimated Calories: 600 kcal.</li>
+                        </ul>
+                        
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 mt-6">Day 5: Friday</h3>
+                        <h4 class="text-lg font-semibold text-green-600">Breakfast: Smoothie Bowl</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A thick smoothie in a bowl, topped with granola and seeds for added texture.</li>
+                            <li>Key Ingredients: Frozen bananas, spinach, almond milk, topped with granola and chia seeds.</li>
+                            <li>Estimated Calories: 350 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 1: A Handful of Almonds</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A quick and healthy snack rich in healthy fats and protein.</li>
+                            <li>Key Ingredients: 1/4 cup of raw almonds.</li>
+                            <li>Estimated Calories: 200 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Lunch: Tuna Salad on Whole Wheat Crackers</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A light but filling lunch providing Omega-3s and protein.</li>
+                            <li>Key Ingredients: Canned tuna, light mayonnaise, chopped celery, whole wheat crackers.</li>
+                            <li>Estimated Calories: 420 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 2: Cherry Tomatoes with Mozzarella Balls</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A fresh and flavorful snack.</li>
+                            <li>Key Ingredients: Cherry tomatoes, small mozzarella balls.</li>
+                            <li>Estimated Calories: 150 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Dinner: Baked Chicken Thighs with Sweet Potatoes</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A comforting and balanced meal with protein and complex carbs.</li>
+                            <li>Key Ingredients: Boneless, skinless chicken thighs, sweet potatoes, rosemary, olive oil.</li>
+                            <li>Estimated Calories: 550 kcal.</li>
+                        </ul>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 mt-6">Day 6: Saturday</h3>
+                        <h4 class="text-lg font-semibold text-green-600">Breakfast: Berry and Spinach Smoothie</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A vitamin-packed smoothie to start the weekend.</li>
+                            <li>Key Ingredients: Mixed berries, handful of spinach, Greek yogurt, water or milk.</li>
+                            <li>Estimated Calories: 300 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 1: Rice Cakes with Avocado</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A light and crispy snack.</li>
+                            <li>Key Ingredients: Two rice cakes, 1/4 avocado.</li>
+                            <li>Estimated Calories: 180 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Lunch: Leftover Salmon and Roasted Veggies</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: Enjoy the delicious leftovers from Monday's dinner.</li>
+                            <li>Key Ingredients: From Monday's dinner.</li>
+                            <li>Estimated Calories: 550 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 2: A Handful of Walnuts</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A simple and heart-healthy snack.</li>
+                            <li>Key Ingredients: 1/4 cup of walnuts.</li>
+                            <li>Estimated Calories: 200 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Dinner: Vegetable and Chickpea Curry</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A flavorful and satisfying vegetarian curry.</li>
+                            <li>Key Ingredients: Chickpeas, coconut milk, curry powder, onions, garlic, broccoli, bell peppers.</li>
+                            <li>Estimated Calories: 580 kcal.</li>
+                        </ul>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 mt-6">Day 7: Sunday</h3>
+                        <h4 class="text-lg font-semibold text-green-600">Breakfast: Cottage Cheese with Sliced Peaches</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A protein-rich breakfast with a touch of natural sweetness.</li>
+                            <li>Key Ingredients: 1 cup low-fat cottage cheese, 1 sliced peach.</li>
+                            <li>Estimated Calories: 220 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 1: A Small Handful of Blueberries</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A simple and antioxidant-rich snack.</li>
+                            <li>Key Ingredients: 1/2 cup of fresh blueberries.</li>
+                            <li>Estimated Calories: 42 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Lunch: Leftover Lentil Soup</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: Enjoy the convenient and delicious leftovers from Wednesday's lunch.</li>
+                            <li>Key Ingredients: From Wednesday's lunch.</li>
+                            <li>Estimated Calories: 380 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Snack 2: Greek Yogurt</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A quick and simple protein source.</li>
+                            <li>Key Ingredients: 1/2 cup Greek yogurt.</li>
+                            <li>Estimated Calories: 150 kcal.</li>
+                        </ul>
+                        <h4 class="text-lg font-semibold text-green-600">Dinner: Baked Cod with Quinoa and Green Beans</h4>
+                        <ul class="list-disc list-inside mb-2">
+                            <li>Description: A light and healthy dinner with lean protein.</li>
+                            <li>Key Ingredients: Cod fillet, quinoa, green beans, lemon.</li>
+                            <li>Estimated Calories: 480 kcal.</li>
+                        </ul>
+                    `);
+                }, 2000); // Simulate a 2-second delay
+            });
+        }
+
+        // Back button functionality
+        document.getElementById('back-btn').addEventListener('click', () => {
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('input-section').classList.remove('hidden');
+            window.scrollTo(0, 0); // Scroll back to the top of the form
+        });
+    </script>
+
+</body>
+</html>
